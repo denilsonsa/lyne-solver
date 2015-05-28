@@ -311,11 +311,10 @@ function build_svg_from_board(board) {
 	var height = (board.height * 1.5 - 0.5);
 	svg_code += '<svg preserveAspectRatio="xMidYMin" viewBox="0 0 ' + width + ' ' + height + '">';
 
-	// TODO: rename the colors from r/b/y to shapes s/d/t
 	var edge_colors = {
-		'r': '#fc1f20',
-		'b': '#0086ff',
-		'y': '#ffa515'
+		's': '#fc1f20',
+		'd': '#0086ff',
+		't': '#ffa515'
 	};
 
 	var num_edges = 0;
