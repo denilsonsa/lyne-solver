@@ -8,6 +8,24 @@ function min(a, b) {
 	}
 }
 
+// Returns a random number x, where 0 <= x < n.
+function randrange(n) {
+	return Math.floor(Math.random() * n);
+}
+
+// Shuffles the array in-place.
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+// http://bost.ocks.org/mike/shuffle/
+// http://www.robweir.com/blog/2010/02/microsoft-random-browser-ballot.html
+function shuffle(arr) {
+	for (var i = arr.length; i > 1; i--) {
+		var j = randrange(i);
+		var tmp = arr[i - 1];
+		arr[i - 1] = arr[j];
+		arr[j] = tmp;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////
 // Data structures.
 
@@ -60,6 +78,7 @@ function Board() {
 	this.errors = [];  // Empty array if no errors.
 	this.nodes = [];  // Array of Array of Nodes (i.e. a matrix of Nodes).
 	this.terminators = [];  // List of positions {x:0,y:0} of terminator nodes.
+	this.edge_count = 0;  // Number of edges in the solution.
 
 	// Temporary variables used while solving the board.
 	this.incomplete_nodes = 0;
@@ -150,12 +169,16 @@ function _solve_board_recursive(board, x, y, color) {
 				if (node.missing_edges === 0) {
 					board.incomplete_nodes--;
 				}
+				board.edge_count++;
 				board.edge_restrictions[restriction] = true;
 
+				// Recursive call.
 				var found = _solve_board_recursive(board, dx, dy, color);
 				if (found) return found;
 
+				// Undoing (back-tracking) this step.
 				delete board.edge_restrictions[restriction];
+				board.edge_count--;
 				if (node.missing_edges === 0) {
 					board.incomplete_nodes++;
 				}
@@ -171,8 +194,7 @@ function _solve_board_recursive(board, x, y, color) {
 	}
 }
 
-function solve_board(board) {
-	// Clearing any previous solution.
+function clear_solution(board) {
 	board.incomplete_nodes = 0;
 	for (var i = 0; i < board.nodes.length; i++) {
 		for (var j = 0; j < board.nodes[i].length; j++) {
@@ -186,7 +208,12 @@ function solve_board(board) {
 			}
 		}
 	}
+	board.edge_count = 0;
 	board.edge_restrictions = {};
+}
+
+function solve_board(board) {
+	clear_solution(board);
 
 	board.starting_points = board.terminators.slice();  // A copy of the array.
 
@@ -317,29 +344,34 @@ function build_svg_from_board(board) {
 		't': '#ffa515'
 	};
 
-	var num_edges = 0;
+	var revealrange = document.getElementById('revealrange');
+	if (board.edge_count === 0) {
+		revealrange.disabled = true;
+	} else {
+		revealrange.disabled = false;
+		revealrange.max = board.edge_count;
 
-	for (var i = 0; i < board.height; i++) {
-		for (var j = 0; j < board.width; j++) {
-			var node = board.nodes[i][j];
-			if (node) {
-				for (var k = 0; k < node.edges.length; k++) {
-					var edge = node.edges[k];
-					svg_code += '<line class="edge" id="edge' + num_edges + '" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
-					num_edges++;
+		var random_numbers = [];
+		for (var i = 0; i < board.edge_count; i++) {
+			random_numbers[i] = i;
+		}
+		shuffle(random_numbers);
+
+		// Building the edges.
+		for (var i = 0; i < board.height; i++) {
+			for (var j = 0; j < board.width; j++) {
+				var node = board.nodes[i][j];
+				if (node) {
+					for (var k = 0; k < node.edges.length; k++) {
+						var edge = node.edges[k];
+						svg_code += '<line class="edge" id="edge' + random_numbers.pop() + '" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
+					}
 				}
 			}
 		}
 	}
 
-	var revealrange = document.getElementById('revealrange');
-	if (num_edges === 0) {
-		revealrange.disabled = true;
-	} else {
-		revealrange.disabled = false;
-		revealrange.max = num_edges;
-	}
-
+	// Building the nodes.
 	for (var i = 0; i < board.height; i++) {
 		for (var j = 0; j < board.width; j++) {
 			var node = board.nodes[i][j];
@@ -352,17 +384,6 @@ function build_svg_from_board(board) {
 				} else {
 					name = Math.floor(node.max_edges / 2) + '';
 				}
-
-				// It is impossible to dynamically create a <use> element and then modify its attributes.
-				// var svgNS = 'http://www.w3.org/2000/svg';
-				// var xlinkNS = 'http://www.w3.org/1999/xlink';
-				// var use = document.createElementNS(svgNS, 'use');
-				// use.setAttributeNS(xlinkNS, 'href', '#node_' + name);
-				// use.setAttributeNS(svgNS, 'x', j * 2);
-				// use.setAttributeNS(svgNS, 'y', i * 2);
-				// use.setAttributeNS(svgNS, 'width', 1);
-				// use.setAttributeNS(svgNS, 'height', 1);
-				// group.appendChild(use);
 
 				svg_code += '<use xlink:href="#node_' + name + '" x="' + (j * 1.5) + '" y="' + (i * 1.5) + '" width="1" height="1" />';
 			}
