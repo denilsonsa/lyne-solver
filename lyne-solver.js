@@ -1,7 +1,5 @@
 'use strict';
 
-var g_board = null;
-
 function min(a, b) {
 	if (a < b) {
 		return a;
@@ -10,14 +8,20 @@ function min(a, b) {
 	}
 }
 
+//////////////////////////////////////////////////////////////////////
+// Data structures.
+
 function Direction(dx, dy, char, name, restriction_direction) {
 	this.dx = dx;
 	this.dy = dy;
-	this.char = char;
-	this.name = name;
+	this.char = char;  // Used only when converting to text.
+	this.name = name;  // Unused.
+	// One of: 'v' for vertical, 'h' for horizontal, 'd' for diagonal.
 	this.restriction_direction = restriction_direction;
 }
 
+// Each edge will block other edges in the same restriction_direction and with
+// the same coordinates.
 Direction.prototype.get_restriction_name = function(x, y) {
 	x += min(0, this.dx);
 	y += min(0, this.dy);
@@ -49,6 +53,20 @@ function Node(color, max_edges) {
 	// List of Edge objects.
 	this.edges = [];
 }
+
+// TODO: create a Board object here.
+
+//////////////////////////////////////////////////////////////////////
+// Solving the board.
+//
+// The board is solved using a straight-forward, brute-force, backtracking
+// algorithm. The algorithm tries every possible combination and stops when one
+// solution is found.
+//
+// It is possible to adapt this code to find all solutions. However, care must
+// be taken to remove duplicate solutions, because the algorithm will find the
+// same solution multiple times (e.g. will find the A->B solution as well as
+// the A<-B one, but both are actually the same solution).
 
 function _solve_board_recursive(board, starting_points, x, y, color) {
 	if (x === null && y === null) {
@@ -84,7 +102,7 @@ function _solve_board_recursive(board, starting_points, x, y, color) {
 				var dy = y + dir.dy;
 
 				// Out-of-bounds.
-				if (dx < 0 || dy < 0 || dy >= board.nodes.length || dx >= board.nodes[y].length) {
+				if (dx < 0 || dy < 0 || dy >= board.nodes.length || dx >= board.nodes[dy].length) {
 					continue;
 				}
 
@@ -165,7 +183,57 @@ function solve_board(board) {
 	return found;
 }
 
-// Receives an already solved board and returns a multi-line string with the solution.
+//////////////////////////////////////////////////////////////////////
+// Text/board conversion.
+
+// Receives an array of strings, where each string is one line.
+// Returns a board.
+function parse_text_input(lines) {
+	var board = {
+		'width': 0,
+		'height': 0,
+		'errors': [],
+		'nodes': [],
+		'terminators': []
+	};
+	var terminator_count = {};
+	for (var i = 0; i < lines.length; i++) {
+		board.nodes[i] = [];
+		for (var j = 0; j < lines[i].length; j++) {
+			var c = lines[i][j];
+			if (c == ' ' || c == '0') {
+				board.nodes[i][j] = null;
+			} else if (c >= '1' && c <= '9') {
+				var num = parseInt(c, 10);
+				board.nodes[i][j] = new Node(null, 2 * num);
+			} else if (c >= 'a' && c <= 'z') {
+				board.nodes[i][j] = new Node(c, 2);
+			} else if (c >= 'A' && c <= 'Z') {
+				board.nodes[i][j] = new Node(c.toLowerCase(), 1);
+				board.terminators.push({'x': j, 'y': i});
+				terminator_count[c] = (terminator_count[c] || 0) + 1;
+			}
+		}
+		if (j > board.width){
+			board.width = j;
+		}
+	}
+	board.height = i;
+
+	if (terminator_count.length == 0) {
+		board.errors.push('No terminator node was found.');
+	}
+	for (var i in terminator_count) {
+		if (terminator_count[i] != 2) {
+			board.errors.push('There are ' + terminator_count[i] + ' terminators of type ' + i + ', but only 2 are expected.');
+		}
+	}
+
+	return board;
+}
+
+// Receives an already solved board.
+// Returns a multi-line string with the solution in ASCII drawing.
 function solution_to_text(board) {
 	var sol = [];
 
@@ -215,10 +283,28 @@ function solution_to_text(board) {
 	return ret;
 }
 
+//////////////////////////////////////////////////////////////////////
+// DOM-related and UI-related manipulation.
+
+function parse_board_from_input() {
+	var puzzleinput = document.getElementById('puzzleinput');
+	var lines = puzzleinput.value.split(/[\r\n]+/);
+	var board = parse_text_input(lines);
+
+	var messages = document.getElementById('messages');
+	messages.value = board.errors.join('\n');
+
+	return board;
+}
+
 function build_svg_from_board(board) {
-	var svg = document.getElementById('svgsolution');
-	var group = document.getElementById('svgsolutiongroup');
-	group.innerHTML = '';
+	var container = document.getElementById('svgsolutioncontainer');
+
+	var svg_code = '';
+
+	var width = (board.width * 1.5 - 0.5);
+	var height = (board.height * 1.5 - 0.5);
+	svg_code += '<svg preserveAspectRatio="xMidYMin" viewBox="0 0 ' + width + ' ' + height + '">';
 
 	// TODO: rename the colors from r/b/y to shapes s/d/t
 	var edge_colors = {
@@ -227,11 +313,7 @@ function build_svg_from_board(board) {
 		'y': '#ffa515'
 	};
 
-	// TODO: Seems to have no effect.
-	// TODO: Create some scaling and group it.
-	//svg.setAttributeNS(svgNS, 'viewBox', '0 0 ' + (board.width * 2 - 1) + ' ' + (board.height * 2 - 1));
-
-	var groupInnerHTML = '';
+	var num_edges = 0;
 
 	for (var i = 0; i < board.height; i++) {
 		for (var j = 0; j < board.width; j++) {
@@ -239,10 +321,19 @@ function build_svg_from_board(board) {
 			if (node) {
 				for (var k = 0; k < node.edges.length; k++) {
 					var edge = node.edges[k];
-					groupInnerHTML += '<line class="edge" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
+					svg_code += '<line class="edge" id="edge' + num_edges + '" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
+					num_edges++;
 				}
 			}
 		}
+	}
+
+	var revealrange = document.getElementById('revealrange');
+	if (num_edges === 0) {
+		revealrange.disabled = true;
+	} else {
+		revealrange.disabled = false;
+		revealrange.max = num_edges;
 	}
 
 	for (var i = 0; i < board.height; i++) {
@@ -269,93 +360,58 @@ function build_svg_from_board(board) {
 				// use.setAttributeNS(svgNS, 'height', 1);
 				// group.appendChild(use);
 
-				groupInnerHTML += '<use xlink:href="#node_' + name + '" x="' + (j * 1.5) + '" y="' + (i * 1.5) + '" width="1" height="1" />';
+				svg_code += '<use xlink:href="#node_' + name + '" x="' + (j * 1.5) + '" y="' + (i * 1.5) + '" width="1" height="1" />';
 			}
 		}
 	}
 
-	group.innerHTML = groupInnerHTML;
+	svg_code += '</svg>';
+	container.innerHTML = svg_code;
+
+	reveal_edges(revealrange.value);
 }
 
-// Receives an array of strings, where each string is one line.
-function parse_text_input(lines) {
-	var board = {
-		'width': 0,
-		'height': 0,
-		'errors': [],
-		'nodes': [],
-		'terminators': []
-	};
-	var terminator_count = {};
-	for (var i = 0; i < lines.length; i++) {
-		board.nodes[i] = [];
-		for (var j = 0; j < lines[i].length; j++) {
-			var c = lines[i][j];
-			if (c == ' ' || c == '0') {
-				board.nodes[i][j] = null;
-			} else if (c >= '1' && c <= '9') {
-				var num = parseInt(c, 10);
-				board.nodes[i][j] = new Node(null, 2 * num);
-			} else if (c >= 'a' && c <= 'z') {
-				board.nodes[i][j] = new Node(c, 2);
-			} else if (c >= 'A' && c <= 'Z') {
-				board.nodes[i][j] = new Node(c.toLowerCase(), 1);
-				board.terminators.push({'x': j, 'y': i});
-				terminator_count[c] = (terminator_count[c] || 0) + 1;
-			}
-		}
-		if (j > board.width){
-			board.width = j;
+function reveal_edges(how_many) {
+	var all_edges = document.querySelectorAll('#svgsolutioncontainer > svg .edge');
+	for (var i = 0; i < all_edges.length; i++) {
+		all_edges[i].style.display = 'none';
+	}
+	for (var i = 0; i < how_many; i++) {
+		var edge = document.getElementById('edge' + i);
+		if (edge) {
+			edge.style.display = 'block';
 		}
 	}
-	board.height = i;
-
-	if (terminator_count.length == 0) {
-		board.errors.push('No terminator node was found.');
-	}
-	for (var i in terminator_count) {
-		if (terminator_count[i] != 2) {
-			board.errors.push('There are ' + terminator_count[i] + ' terminators of type ' + i + ', but only 2 are expected.');
-		}
-	}
-
-	return board;
 }
 
-
-function parse_board_from_input() {
-	var puzzleinput = document.getElementById('puzzleinput');
-	var lines = puzzleinput.value.split(/[\r\n]+/);
-	var board = parse_text_input(lines);
-
-	var messages = document.getElementById('messages');
-	messages.value = board.errors.join('\n');
-
-	g_board = board;
-	return board;
-}
-
+//////////////////////////////////////////////////////////////////////
+// Event handling.
 
 function puzzleinput_input_handler() {
-	parse_board_from_input();
-	build_svg_from_board(g_board);
+	var board = parse_board_from_input();
+	build_svg_from_board(board);
 }
 
 function solvebutton_click_handler() {
-	parse_board_from_input();
+	var board = parse_board_from_input();
 
-	if (g_board.errors.length === 0) {
+	if (board.errors.length === 0) {
 		var messages = document.getElementById('messages');
-		var found = solve_board(g_board);
+		var found = solve_board(board);
 		if (found) {
 			messages.value = 'Solution found!';
 		} else {
 			messages.value = 'No solution was found. :(';
 		}
 
-		//console.log(solution_to_text(g_board));
-		build_svg_from_board(g_board);
+		//console.log(solution_to_text(board));
+		build_svg_from_board(board);
 	}
+}
+
+function revealrange_input_handler() {
+	var revealrange = document.getElementById('revealrange');
+	reveal_edges(revealrange.value);
 }
 
 function init() {
@@ -364,6 +420,9 @@ function init() {
 
 	var puzzleinput = document.getElementById('puzzleinput');
 	puzzleinput.addEventListener('input', puzzleinput_input_handler);
+
+	var revealrange = document.getElementById('revealrange');
+	revealrange.addEventListener('input', revealrange_input_handler);
 
 	puzzleinput_input_handler();
 }

@@ -6,6 +6,26 @@ html, body {
 	width: 100%;
 	height: 100%;
 	font-size: 16px;
+	font-family: sans-serif;
+}
+
+html {
+	color: #efebdf;
+	background-color: #1e1e1e;
+	background-size: 12.5vmax 12.5vmax;
+	background-image:
+		linear-gradient(45deg, #1e1e1e 33%, transparent 33%),
+		linear-gradient(135deg, #1e1e1e 33%, transparent 33%),
+		linear-gradient(225deg, #1e1e1e 33%, transparent 33%),
+		linear-gradient(315deg, #1e1e1e 33%, transparent 33%),
+		linear-gradient(0deg, #3b3b39, #3b3b39)
+	;
+}
+textarea {
+	background-image: none;
+	background-color: #1e1e1e;
+	color: inherit;
+	border-color: currentColor;
 }
 
 #svgdefs {
@@ -31,20 +51,25 @@ article {
 article > section:first-child {
 	flex-grow: 1;
 	flex-shrink: 1;
-	flex-basis: 7em;
+	flex-basis: 8em;
 
 	display: flex;
 	flex-direction: column;
 }
 article > section:last-child {
-	flex-grow: 16;
+	flex-grow: 1024;
 	flex-shrink: 1;
+	flex-basis: 14em;
+}
 
-	display: flex;
+article > section:first-child > * {
+	display: block;
+	width: auto;
+	margin-left: 0;
+	margin-right: 0;
 }
 
 article > section > textarea#puzzleinput {
-	display: block;
 	box-sizing: content-box;
 	min-height: 7.1em;
 	min-width: 4em;
@@ -56,8 +81,9 @@ article > section > textarea#puzzleinput {
 	line-height: 1em;
 }
 article > section > output#messages {
-	display: block;
-	min-height: 1em;
+	min-height: 1.1em;
+	line-height: 1.1em;
+	margin: 1ex 0;
 }
 
 article > section > svg#svgsolution {
@@ -65,9 +91,25 @@ article > section > svg#svgsolution {
 	flex-shrink: 1;
 }
 
-#svgsolution {
-	min-width: 14em;
+#svgsolutioncontainer {
+	display: block;
+	width: 100%;
+	height: 100vh;
+	max-width: 100vw;
+	position: relative;
 }
-#svgsolution .edge {
+#svgsolutioncontainer > svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: auto;
+	height: auto;
+	max-width: 100vw;
+	max-height: 100vh;
+}
+#svgsolutioncontainer > svg .edge {
 	stroke-width: 0.125px;
+	display: none;
 }

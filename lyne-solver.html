@@ -78,12 +78,13 @@ R3rR
  Bb</textarea>
 	<input type="button" id="solvebutton" value="Solve it!">
 	<output id="messages"></output>
+	<label for="revealrange">Reveal:</label>
+	<input type="range" id="revealrange" value="0" min="0" step="1">
+	<!--label><input type="checkbox" id="randomreveal"> Random reveal</label-->
 </section>
 
 <section>
-	<svg id="svgsolution" viewBox="0 0 7 7">
-		<g id="svgsolutiongroup"></g>
-	</svg>
+	<div id="svgsolutioncontainer"></div>
 </section>
 </article>
 
