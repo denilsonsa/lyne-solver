@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<link href="lyne-solver.css" rel="stylesheet">
+<script src="lyne-solver.js" defer></script>
+<title>LYNE puzzle solver</title>
+</head>
+<body>
+
+<svg id="svgdefs">
+	<defs>
+		<path id="triangle_shape" d="M0.5,0 l0.5,0.866 h-1 z" />
+		<clipPath id="triangle_clip" clipPathUnits="userSpaceOnUse">
+			<use xlink:href="#triangle_shape" x="0" y="0" />
+		</clipPath>
+		<symbol id="node_y" viewBox="0 0 1 1">
+			<use xlink:href="#triangle_shape" x="0" y="0" fill="#ce8930" />
+		</symbol>
+		<symbol id="node_Y" viewBox="0 0 1 1">
+			<use xlink:href="#triangle_shape" x="0" y="0" fill="none" stroke="#efebdf" stroke-width="1" clip-path="url(#triangle_clip)" />
+			<use xlink:href="#triangle_shape" x="0" y="0" fill="none" stroke="#ce8930" stroke-width="0.44" clip-path="url(#triangle_clip)" />
+			<use xlink:href="#triangle_shape" x="0" y="0" fill="none" stroke="#ffa515" stroke-width="0.15" clip-path="url(#triangle_clip)" />
+		</symbol>
+
+		<path id="diamond_shape" d="M0.5,0 l0.5,0.5 l-0.5,0.5 l-0.5,-0.5 z" />
+		<clipPath id="diamond_clip" clipPathUnits="userSpaceOnUse">
+			<use xlink:href="#diamond_shape" x="0" y="0" />
+		</clipPath>
+		<symbol id="node_b" viewBox="0 0 1 1">
+			<use xlink:href="#diamond_shape" x="0" y="0" fill="#4ab2ff" />
+		</symbol>
+		<symbol id="node_B" viewBox="0 0 1 1">
+			<use xlink:href="#diamond_shape" x="0" y="0" fill="none" stroke="#efebdf" stroke-width="1" clip-path="url(#diamond_clip)" />
+			<use xlink:href="#diamond_shape" x="0" y="0" fill="none" stroke="#4ab2ff" stroke-width="0.5" clip-path="url(#diamond_clip)" />
+			<use xlink:href="#diamond_shape" x="0" y="0" fill="none" stroke="#0086ff" stroke-width="0.15" clip-path="url(#diamond_clip)" />
+		</symbol>
+
+		<path id="square_shape" d="M0.125,0.125 h0.75 v0.75 h-0.75 z" />
+		<clipPath id="square_clip" clipPathUnits="userSpaceOnUse">
+			<use xlink:href="#square_shape" x="0" y="0" />
+		</clipPath>
+		<symbol id="node_r" viewBox="0 0 1 1">
+			<use xlink:href="#square_shape" x="0" y="0" fill="#c60000" />
+		</symbol>
+		<symbol id="node_R" viewBox="0 0 1 1">
+			<use xlink:href="#square_shape" x="0" y="0" fill="none" stroke="#efebdf" stroke-width="1" clip-path="url(#square_clip)" />
+			<use xlink:href="#square_shape" x="0" y="0" fill="none" stroke="#c60000" stroke-width="0.5" clip-path="url(#square_clip)" />
+			<use xlink:href="#square_shape" x="0" y="0" fill="none" stroke="#fc1f20" stroke-width="0.15" clip-path="url(#square_clip)" />
+		</symbol>
+
+		<path id="octogon_shape" d="M0.02,0.30 l0.28,-0.28 h0.4 l0.28,0.28 v0.4 l-0.28,0.28 h-0.4 l-0.28,-0.28 z" />
+		<path id="octogon_diamond_shape" d="M-0.1,0 l0.1,-0.1 l0.1,0.1 l-0.1,0.1 z" />
+		<symbol id="node_1" viewBox="0 0 1 1">
+			<use xlink:href="#octogon_shape" x="0" y="0" fill="#d1cfb8" />
+			<use xlink:href="#octogon_diamond_shape" x="0.5" y="0.5" fill="#1e1e1e" />
+		</symbol>
+		<symbol id="node_2" viewBox="0 0 1 1">
+			<use xlink:href="#octogon_shape" x="0" y="0" fill="#d1cfb8" />
+			<use xlink:href="#octogon_diamond_shape" x="0.35" y="0.5" fill="#1e1e1e" />
+			<use xlink:href="#octogon_diamond_shape" x="0.65" y="0.5" fill="#1e1e1e" />
+		</symbol>
+		<symbol id="node_3" viewBox="0 0 1 1">
+			<use xlink:href="#node_2" x="0" y="0" width="1" height="1" />
+			<use xlink:href="#octogon_diamond_shape" x="0.5" y="0.35" fill="#1e1e1e" />
+		</symbol>
+		<symbol id="node_4" viewBox="0 0 1 1">
+			<use xlink:href="#node_2" x="0" y="0" width="1" height="1" />
+			<use xlink:href="#octogon_diamond_shape" x="0.5" y="0.65" fill="#1e1e1e" />
+		</symbol>
+	</defs>
+</svg>
+
+<article>
+<section>
+	<textarea id="puzzleinput">YByY
+R3rR
+ Bb</textarea>
+	<input type="button" id="solvebutton" value="Solve it!">
+	<output id="messages"></output>
+</section>
+
+<section>
+	<svg id="svgsolution" viewBox="0 0 7 7">
+		<g id="svgsolutiongroup"></g>
+	</svg>
+</section>
+</article>
+
+</body>
+</html>

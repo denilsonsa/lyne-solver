@@ -1,0 +1,73 @@
+@charset "utf-8";
+
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-size: 16px;
+}
+
+#svgdefs {
+	/* For some reason, using display:none in this SVG will prevent the clip-path from working correctly. */
+	/* display: none; */
+
+	/* Workaround: */
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+}
+
+article {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 100%;
+}
+
+article > section:first-child {
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 7em;
+
+	display: flex;
+	flex-direction: column;
+}
+article > section:last-child {
+	flex-grow: 16;
+	flex-shrink: 1;
+
+	display: flex;
+}
+
+article > section > textarea#puzzleinput {
+	display: block;
+	box-sizing: content-box;
+	min-height: 7.1em;
+	min-width: 4em;
+	min-width: 7.1ch;
+	width: auto;
+
+	font-family: "Inconsolata", monospace;
+	font-size: 1.5em;
+	line-height: 1em;
+}
+article > section > output#messages {
+	display: block;
+	min-height: 1em;
+}
+
+article > section > svg#svgsolution {
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+#svgsolution {
+	min-width: 14em;
+}
+#svgsolution .edge {
+	stroke-width: 0.125px;
+}
