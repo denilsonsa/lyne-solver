@@ -54,7 +54,18 @@ function Node(color, max_edges) {
 	this.edges = [];
 }
 
-// TODO: create a Board object here.
+function Board() {
+	this.width = 0;
+	this.height = 0;
+	this.errors = [];  // Empty array if no errors.
+	this.nodes = [];  // Array of Array of Nodes (i.e. a matrix of Nodes).
+	this.terminators = [];  // List of positions {x:0,y:0} of terminator nodes.
+
+	// Temporary variables used while solving the board.
+	this.incomplete_nodes = 0;
+	this.edge_restrictions = {};  // Map blocked edges (String -> true).
+	this.starting_points = [];  // List of terminators that are not completed yet.
+}
 
 //////////////////////////////////////////////////////////////////////
 // Solving the board.
@@ -68,9 +79,9 @@ function Node(color, max_edges) {
 // same solution multiple times (e.g. will find the A->B solution as well as
 // the A<-B one, but both are actually the same solution).
 
-function _solve_board_recursive(board, starting_points, x, y, color) {
+function _solve_board_recursive(board, x, y, color) {
 	if (x === null && y === null) {
-		if (starting_points.length === 0) {
+		if (board.starting_points.length === 0) {
 			if (board.incomplete_nodes === 0) {
 				// Found a solution!
 				return true;
@@ -82,10 +93,10 @@ function _solve_board_recursive(board, starting_points, x, y, color) {
 			}
 		} else {
 			// Start a new path.
-			var p = starting_points.pop();
-			var found = _solve_board_recursive(board, starting_points, p.x, p.y, board.nodes[p.y][p.x].color);
+			var p = board.starting_points.pop();
+			var found = _solve_board_recursive(board, p.x, p.y, board.nodes[p.y][p.x].color);
 			if (found) return found;
-			starting_points.push(p);
+			board.starting_points.push(p);
 			return false;
 		}
 	} else {
@@ -94,7 +105,7 @@ function _solve_board_recursive(board, starting_points, x, y, color) {
 
 		if (src_node.missing_edges === 0) {
 			// End of a path.
-			return _solve_board_recursive(board, starting_points, null, null, null);
+			return _solve_board_recursive(board, null, null, null);
 		} else {
 			// Middle of a path.
 			for (var dir of DIRECTIONS) {
@@ -141,7 +152,7 @@ function _solve_board_recursive(board, starting_points, x, y, color) {
 				}
 				board.edge_restrictions[restriction] = true;
 
-				var found = _solve_board_recursive(board, starting_points, dx, dy, color);
+				var found = _solve_board_recursive(board, dx, dy, color);
 				if (found) return found;
 
 				delete board.edge_restrictions[restriction];
@@ -177,9 +188,9 @@ function solve_board(board) {
 	}
 	board.edge_restrictions = {};
 
-	var starting_points = board.terminators.slice();  // A copy of the array.
+	board.starting_points = board.terminators.slice();  // A copy of the array.
 
-	var found = _solve_board_recursive(board, starting_points, null, null, null);
+	var found = _solve_board_recursive(board, null, null, null);
 	return found;
 }
 
@@ -189,13 +200,7 @@ function solve_board(board) {
 // Receives an array of strings, where each string is one line.
 // Returns a board.
 function parse_text_input(lines) {
-	var board = {
-		'width': 0,
-		'height': 0,
-		'errors': [],
-		'nodes': [],
-		'terminators': []
-	};
+	var board = new Board();
 	var terminator_count = {};
 	for (var i = 0; i < lines.length; i++) {
 		board.nodes[i] = [];
