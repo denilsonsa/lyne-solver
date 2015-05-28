@@ -49,6 +49,32 @@
 			<use xlink:href="#square_shape" x="0" y="0" fill="none" stroke="#fc1f20" stroke-width="0.15" clip-path="url(#square_clip)" />
 		</symbol>
 
+		<path id="pentagon_shape" d="M0.5,0 l0.476,0.346 -0.182,0.559 h-0.588 l-0.182,-0.559 z" />
+		<clipPath id="pentagon_clip" clipPathUnits="userSpaceOnUse">
+			<use xlink:href="#pentagon_shape" x="0" y="0" />
+		</clipPath>
+		<symbol id="node_p" viewBox="0 0 1 1">
+			<use xlink:href="#pentagon_shape" x="0" y="0" fill="#19ca19" />
+		</symbol>
+		<symbol id="node_P" viewBox="0 0 1 1">
+			<use xlink:href="#pentagon_shape" x="0" y="0" fill="none" stroke="#efebdf" stroke-width="1" clip-path="url(#pentagon_clip)" />
+			<use xlink:href="#pentagon_shape" x="0" y="0" fill="none" stroke="#19ca19" stroke-width="0.5" clip-path="url(#pentagon_clip)" />
+			<use xlink:href="#pentagon_shape" x="0" y="0" fill="none" stroke="#009e00" stroke-width="0.15" clip-path="url(#pentagon_clip)" />
+		</symbol>
+
+		<path id="hexagon_shape" d="M0,0.5 l0.25,-0.433 h0.5 l0.25,0.433 -0.25,0.433 h-0.5 z" />
+		<clipPath id="hexagon_clip" clipPathUnits="userSpaceOnUse">
+			<use xlink:href="#hexagon_shape" x="0" y="0" />
+		</clipPath>
+		<symbol id="node_h" viewBox="0 0 1 1">
+			<use xlink:href="#hexagon_shape" x="0" y="0" fill="#9f005a" />
+		</symbol>
+		<symbol id="node_H" viewBox="0 0 1 1">
+			<use xlink:href="#hexagon_shape" x="0" y="0" fill="none" stroke="#efebdf" stroke-width="1" clip-path="url(#hexagon_clip)" />
+			<use xlink:href="#hexagon_shape" x="0" y="0" fill="none" stroke="#9f005a" stroke-width="0.5" clip-path="url(#hexagon_clip)" />
+			<use xlink:href="#hexagon_shape" x="0" y="0" fill="none" stroke="#ca197d" stroke-width="0.15" clip-path="url(#hexagon_clip)" />
+		</symbol>
+
 		<path id="octogon_shape" d="M0.02,0.30 l0.28,-0.28 h0.4 l0.28,0.28 v0.4 l-0.28,0.28 h-0.4 l-0.28,-0.28 z" />
 		<path id="octogon_diamond_shape" d="M-0.1,0 l0.1,-0.1 l0.1,0.1 l-0.1,0.1 z" />
 		<symbol id="node_1" viewBox="0 0 1 1">
@@ -65,7 +91,7 @@
 			<use xlink:href="#octogon_diamond_shape" x="0.5" y="0.35" fill="#1e1e1e" />
 		</symbol>
 		<symbol id="node_4" viewBox="0 0 1 1">
-			<use xlink:href="#node_2" x="0" y="0" width="1" height="1" />
+			<use xlink:href="#node_3" x="0" y="0" width="1" height="1" />
 			<use xlink:href="#octogon_diamond_shape" x="0.5" y="0.65" fill="#1e1e1e" />
 		</symbol>
 	</defs>
@@ -73,9 +99,10 @@
 
 <article>
 <section>
-	<textarea id="puzzleinput">TDtT
-S3sS
- Dd</textarea>
+	<textarea id="puzzleinput">TDS PHp
+ tdsh4p
+ 123hPH
+TdDSs</textarea>
 	<input type="button" id="solvebutton" value="Solve it!">
 	<output id="messages"></output>
 	<label for="revealrange">Reveal:</label>

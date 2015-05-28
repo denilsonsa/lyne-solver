@@ -341,7 +341,9 @@ function build_svg_from_board(board) {
 	var edge_colors = {
 		's': '#fc1f20',
 		'd': '#0086ff',
-		't': '#ffa515'
+		't': '#ffa515',
+		'p': '#009e00',
+		'h': '#ca197d'
 	};
 
 	var revealrange = document.getElementById('revealrange');
