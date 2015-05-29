@@ -19,7 +19,7 @@ The puzzle description is plain text formed by the following characters:
 * Numbers `1`, `2`, `3`, `4` denote gray shapes that have 1, 2, 3 or 4 paths passing through them.
 * Space character denotes an empty space.
 
-Note that the original LYNE game only contains 3 shapes and does not have all 4 types of gray nodes. Also, the largest puzzle size in the original game seems to be 3x7. This solver does not have such limitations.
+Note that the original LYNE game only contains 3 shapes and does not have all 4 types of gray nodes.
 
 About LYNE
 ----------
