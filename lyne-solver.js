@@ -254,6 +254,10 @@ function parse_text_input(lines) {
 	}
 	board.height = i;
 
+	if (board.width < 1 || board.height < 1) {
+		board.errors.push('Empty board.');
+	}
+
 	if (terminator_count.length == 0) {
 		board.errors.push('No terminator node was found.');
 	}
@@ -332,6 +336,10 @@ function parse_board_from_input() {
 }
 
 function build_svg_from_board(board) {
+	if (board.width < 1 || board.height < 1) {
+		return;
+	}
+
 	var container = document.getElementById('svgsolutioncontainer');
 
 	var svg_code = '';
