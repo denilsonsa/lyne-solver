@@ -27,6 +27,12 @@ textarea {
 	color: inherit;
 	border-color: currentColor;
 }
+a,
+:link,
+:visited {
+	color: #4ab2ff;
+	text-decoration: none;
+}
 
 #svgdefs {
 	/* For some reason, using display:none in this SVG will prevent the clip-path from working correctly. */
@@ -63,6 +69,9 @@ article > section:last-child {
 }
 
 article > section:first-child > * {
+	flex-grow: 0;
+	flex-shrink: 0;
+
 	display: block;
 	width: auto;
 	margin-left: 0;
@@ -70,6 +79,8 @@ article > section:first-child > * {
 }
 
 article > section > textarea#puzzleinput {
+	flex-grow: 1;
+
 	box-sizing: content-box;
 	min-height: 7.1em;
 	min-width: 4em;

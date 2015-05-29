@@ -235,7 +235,7 @@ function parse_text_input(lines) {
 			var c = lines[i][j];
 			if (c == ' ' || c == '0') {
 				board.nodes[i][j] = null;
-			} else if (c >= '1' && c <= '9') {
+			} else if (c >= '1' && c <= '4') {
 				var num = parseInt(c, 10);
 				board.nodes[i][j] = new Node(null, 2 * num);
 			} else if (c >= 'a' && c <= 'z') {
@@ -244,6 +244,8 @@ function parse_text_input(lines) {
 				board.nodes[i][j] = new Node(c.toLowerCase(), 1);
 				board.terminators.push({'x': j, 'y': i});
 				terminator_count[c] = (terminator_count[c] || 0) + 1;
+			} else {
+				board.errors.push('Invalid character: ' + c);
 			}
 		}
 		if (j > board.width){
