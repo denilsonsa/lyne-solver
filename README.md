@@ -5,6 +5,8 @@ This is a solver for [LYNE][] game. It can also gradually show the connections, 
 
 The solver is written in JavaScript and HTML+CSS+SVG. It should work on any modern browser, desktop or mobile. It has been tested on Google Chrome 43 and Mozilla Firefox 38.
 
+[Open the solver online, in your browser!][solver]
+
 How to use this solver
 ----------------------
 
@@ -40,6 +42,7 @@ This solver was written by [Denilson Sá][denilsonsa] using modern web technolog
 * Many LYNE puzzles have multiple solutions. The solver finds one arbitrary solution. It is possible to adapt the code to find all solutions, but it would also require additional code to remove duplicate solutions.
 * There is function to output a plain text representation of the solution, but there is no UI for it. It was implemented as a way to check if the algorithm worked, before the SVG-building function was written.
 
+[solver]: http://denilsonsa.github.io/lyne-solver/lyne-solver.html
 [lyne]: http://www.lynegame.com/
 [play]: https://play.google.com/store/apps/details?id=com.thomasbowker.lynerelease
 [amazon]: http://www.amazon.com/Thomas-Bowker-LYNE/dp/B00HA8WNZ0
