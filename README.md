@@ -17,7 +17,7 @@ The puzzle description is plain text formed by the following characters:
 * Lower-case `t`, `s`, `d`, `p`, `h` letters denote shapes.
 * Upper-case `T`, `S`, `D`, `P`, `H` letters denote terminator nodes (shapes that have a white inside). Paths will always start and end in a terminator node.
 * Numbers `1`, `2`, `3`, `4` denote gray shapes that have 1, 2, 3 or 4 paths passing through them.
-* Space character to denote an empty space.
+* Space character denotes an empty space.
 
 Note that the original LYNE game only contains 3 shapes and does not have all 4 types of gray nodes. Also, the largest puzzle size in the original game seems to be 3x7. This solver does not have such limitations.
 
