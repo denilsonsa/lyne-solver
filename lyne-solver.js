@@ -127,7 +127,8 @@ function _solve_board_recursive(board, x, y, color) {
 			return _solve_board_recursive(board, null, null, null);
 		} else {
 			// Middle of a path.
-			for (var dir of DIRECTIONS) {
+			for (var i = 0; i < DIRECTIONS.length; i++) {
+				var dir = DIRECTIONS[i];
 				var dx = x + dir.dx;
 				var dy = y + dir.dy;
 
@@ -330,7 +331,7 @@ function parse_board_from_input() {
 	var board = parse_text_input(lines);
 
 	var messages = document.getElementById('messages');
-	messages.value = board.errors.join('\n');
+	messages.innerHTML = board.errors.join('\n');
 
 	return board;
 }
@@ -361,13 +362,24 @@ function build_svg_from_board(board) {
 		revealrange.disabled = true;
 	} else {
 		revealrange.disabled = false;
+
+		// remember if value was at maximum
+		var shouldmax = revealrange.value == revealrange.max;
+		
 		revealrange.max = board.edge_count;
+		
+		// if value was already at maximum before, the user likely wants the value at maximum again
+		if (shouldmax) {
+			revealrange.value = revealrange.max;
+		}
 
 		var random_numbers = [];
 		for (var i = 0; i < board.edge_count; i++) {
 			random_numbers[i] = i;
 		}
 		shuffle(random_numbers);
+
+		var isDirectional = document.getElementById('directional').checked;
 
 		// Building the edges.
 		for (var i = 0; i < board.height; i++) {
@@ -376,7 +388,40 @@ function build_svg_from_board(board) {
 				if (node) {
 					for (var k = 0; k < node.edges.length; k++) {
 						var edge = node.edges[k];
-						svg_code += '<line class="edge" id="edge' + random_numbers.pop() + '" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
+						var n = random_numbers.pop();
+						
+						var startX = (j * 1.5 + 0.5),
+							startY = (i * 1.5 + 0.5),
+							endX = ((j + edge.direction.dx) * 1.5 + 0.5),
+							endY = ((i + edge.direction.dy) * 1.5 + 0.5);
+
+
+						if (isDirectional) {
+							var midX = (startX + endX) / 2,
+								midY = (startY + endY) / 2;
+
+							// if directional, draw the line in two segments, one of them larger.
+							svg_code += '<line class="edge" id="edge' + n + 
+								'" stroke="' + edge_colors[edge.color] + 
+								'" x1="' + startX + 
+								'" y1="' + startY + 
+								'" x2="' + midX + 
+								'" y2="' + midY + '" />';
+							svg_code += '<line class="edge edgewide" id="edge' + n + 'x' +
+								'" stroke="' + edge_colors[edge.color] + 
+								'" x1="' + midX + 
+								'" y1="' + midY + 
+								'" x2="' + endX + 
+								'" y2="' + endY + '" />';
+						} else {
+							svg_code += '<line class="edge" id="edge' + n + 
+								'" stroke="' + edge_colors[edge.color] + 
+								'" x1="' + startX + 
+								'" y1="' + startY + 
+								'" x2="' + endX + 
+								'" y2="' + endY + '" />';
+						}
+						
 					}
 				}
 			}
@@ -414,31 +459,43 @@ function reveal_edges(how_many) {
 		all_edges[i].style.display = 'none';
 	}
 	for (var i = 0; i < how_many; i++) {
-		var edge = document.getElementById('edge' + i);
+		var edge = document.getElementById('edge' + i),
+			edgex = document.getElementById('edge' + i + 'x');
+		
 		if (edge) {
 			edge.style.display = 'block';
 		}
+		if (edgex) {
+			edgex.style.display = 'block';
+		}
 	}
 }
+
+var lastBoard;
 
 //////////////////////////////////////////////////////////////////////
 // Event handling.
 
 function puzzleinput_input_handler() {
-	var board = parse_board_from_input();
+	var board = lastBoard = parse_board_from_input();
 	build_svg_from_board(board);
+
+	var autosolve = document.getElementById('autosolve');
+	if (autosolve.checked) {
+		solvebutton_click_handler();
+	}
 }
 
 function solvebutton_click_handler() {
-	var board = parse_board_from_input();
+	var board = lastBoard = parse_board_from_input();
 
 	if (board.errors.length === 0) {
 		var messages = document.getElementById('messages');
 		var found = solve_board(board);
 		if (found) {
-			messages.value = 'Solution found!';
+			messages.innerHTML = 'Solution found!';
 		} else {
-			messages.value = 'No solution was found. :(';
+			messages.innerHTML = 'No solution was found. :(';
 		}
 
 		//console.log(solution_to_text(board));
@@ -451,6 +508,13 @@ function revealrange_input_handler() {
 	reveal_edges(revealrange.value);
 }
 
+function directional_input_handler () {
+	if (lastBoard) {
+		build_svg_from_board(lastBoard);
+		revealrange_input_handler();
+	}
+}
+
 function init() {
 	var solvebutton = document.getElementById('solvebutton');
 	solvebutton.addEventListener('click', solvebutton_click_handler);
@@ -459,8 +523,12 @@ function init() {
 	puzzleinput.addEventListener('input', puzzleinput_input_handler);
 
 	var revealrange = document.getElementById('revealrange');
+	revealrange.addEventListener('change', revealrange_input_handler);
 	revealrange.addEventListener('input', revealrange_input_handler);
 
+	var directional = document.getElementById('directional');
+	directional.addEventListener('change', directional_input_handler);
+	
 	puzzleinput_input_handler();
 }
 
