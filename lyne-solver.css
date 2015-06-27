@@ -91,7 +91,7 @@ article > section > textarea#puzzleinput {
 	font-size: 1.5em;
 	line-height: 1em;
 }
-article > section > output#messages {
+article > section > div#messages {
 	min-height: 1.1em;
 	line-height: 1.1em;
 	margin: 1ex 0;

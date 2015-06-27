@@ -330,7 +330,7 @@ function parse_board_from_input() {
 	var board = parse_text_input(lines);
 
 	var messages = document.getElementById('messages');
-	messages.value = board.errors.join('\n');
+	messages.textContent = board.errors.join('\n');
 
 	return board;
 }
@@ -436,9 +436,9 @@ function solvebutton_click_handler() {
 		var messages = document.getElementById('messages');
 		var found = solve_board(board);
 		if (found) {
-			messages.value = 'Solution found!';
+			messages.textContent = 'Solution found!';
 		} else {
-			messages.value = 'No solution was found. :(';
+			messages.textContent = 'No solution was found. :(';
 		}
 
 		//console.log(solution_to_text(board));
