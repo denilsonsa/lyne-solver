@@ -130,6 +130,7 @@ article > section > svg#svgsolution {
 	stroke-width: 0.125px;
 	display: none;
 }
+
 #svgsolutioncontainer.directional > svg .edge {
 	marker-mid: url(#mid_arrow);
 }

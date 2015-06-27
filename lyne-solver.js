@@ -382,6 +382,8 @@ function build_svg_from_board(board) {
 		}
 		shuffle(random_numbers);
 
+		var isDirectional = document.getElementById('directional').checked;
+
 		// Building the edges.
 		for (var i = 0; i < board.height; i++) {
 			for (var j = 0; j < board.width; j++) {
@@ -434,23 +436,35 @@ function reveal_edges(how_many) {
 		all_edges[i].style.display = 'none';
 	}
 	for (var i = 0; i < how_many; i++) {
-		var edge = document.getElementById('edge' + i);
+		var edge = document.getElementById('edge' + i),
+			edgex = document.getElementById('edge' + i + 'x');
+		
 		if (edge) {
 			edge.style.display = 'block';
 		}
+		if (edgex) {
+			edgex.style.display = 'block';
+		}
 	}
 }
+
+var lastBoard;
 
 //////////////////////////////////////////////////////////////////////
 // Event handling.
 
 function puzzleinput_input_handler() {
-	var board = parse_board_from_input();
+	var board = lastBoard = parse_board_from_input();
 	build_svg_from_board(board);
+
+	var autosolve = document.getElementById('autosolve');
+	if (autosolve.checked) {
+		solvebutton_click_handler();
+	}
 }
 
 function solvebutton_click_handler() {
-	var board = parse_board_from_input();
+	var board = lastBoard = parse_board_from_input();
 
 	if (board.errors.length === 0) {
 		var messages = document.getElementById('messages');
@@ -492,6 +506,7 @@ function init() {
 	puzzleinput.addEventListener('input', puzzleinput_input_handler);
 
 	var revealrange = document.getElementById('revealrange');
+	revealrange.addEventListener('change', revealrange_input_handler);
 	revealrange.addEventListener('input', revealrange_input_handler);
 
 	var directionalcheckbox = document.getElementById('directionalcheckbox');
