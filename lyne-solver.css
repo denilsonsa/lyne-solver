@@ -95,6 +95,8 @@ article > section > output#messages {
 	min-height: 1.1em;
 	line-height: 1.1em;
 	margin: 1ex 0;
+	white-space: pre-wrap;
+	white-space: pre-line;
 }
 
 article > section > svg#svgsolution {
