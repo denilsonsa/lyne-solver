@@ -82,7 +82,7 @@ article > section > textarea#puzzleinput {
 	flex-grow: 1;
 
 	box-sizing: content-box;
-	min-height: 7.1em;
+	min-height: 5.1em;
 	min-width: 4em;
 	min-width: 7.1ch;
 	width: auto;
@@ -97,6 +97,10 @@ article > section > div#messages {
 	margin: 1ex 0;
 	white-space: pre-wrap;
 	white-space: pre-line;
+}
+article > section > p {
+	margin: 0;
+	margin-top: 1ex;
 }
 
 article > section > svg#svgsolution {
@@ -125,4 +129,7 @@ article > section > svg#svgsolution {
 #svgsolutioncontainer > svg .edge {
 	stroke-width: 0.125px;
 	display: none;
+}
+#svgsolutioncontainer.directional > svg .edge {
+	marker-mid: url(#mid_arrow);
 }

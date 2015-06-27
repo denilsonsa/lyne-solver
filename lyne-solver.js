@@ -344,7 +344,7 @@ function build_svg_from_board(board) {
 		return;
 	}
 
-	var container = document.getElementById('svgsolutioncontainer');
+	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
 
 	var svg_code = '';
 
@@ -389,7 +389,14 @@ function build_svg_from_board(board) {
 				if (node) {
 					for (var k = 0; k < node.edges.length; k++) {
 						var edge = node.edges[k];
-						svg_code += '<line class="edge" id="edge' + random_numbers.pop() + '" stroke="' + edge_colors[edge.color] + '" x1="' + (j * 1.5 + 0.5) + '" y1="' + (i * 1.5 + 0.5) + '" x2="' + ((j + edge.direction.dx) * 1.5 + 0.5) + '" y2="' + ((i + edge.direction.dy) * 1.5 + 0.5) + '" />';
+						svg_code += '<polyline ' +
+							'class="edge" '+
+							'id="edge' + random_numbers.pop() + '" ' +
+							'stroke="' + edge_colors[edge.color] + '" ' +
+							'points="' +
+							'' + ((j                        ) * 1.5 + 0.5) + ',' + ((i                        ) * 1.5 + 0.5) + ' ' +
+							'' + ((j + edge.direction.dx / 2) * 1.5 + 0.5) + ',' + ((i + edge.direction.dy / 2) * 1.5 + 0.5) + ' ' +
+							'' + ((j + edge.direction.dx    ) * 1.5 + 0.5) + ',' + ((i + edge.direction.dy    ) * 1.5 + 0.5) + '" />';
 					}
 				}
 			}
@@ -416,7 +423,7 @@ function build_svg_from_board(board) {
 	}
 
 	svg_code += '</svg>';
-	container.innerHTML = svg_code;
+	svgsolutioncontainer.innerHTML = svg_code;
 
 	reveal_edges(revealrange.value);
 }
@@ -464,6 +471,19 @@ function revealrange_input_handler() {
 	reveal_edges(revealrange.value);
 }
 
+function directionalcheckbox_click_handler() {
+	var directionalcheckbox = document.getElementById('directionalcheckbox');
+	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
+
+	// Damn IE… Does not support toggle second argument.
+	//svgsolutioncontainer.classList.toggle('directional', directionalcheckbox.checked);
+	if (directionalcheckbox.checked) {
+		svgsolutioncontainer.classList.add('directional');
+	} else {
+		svgsolutioncontainer.classList.remove('directional');
+	}
+}
+
 function init() {
 	var solvebutton = document.getElementById('solvebutton');
 	solvebutton.addEventListener('click', solvebutton_click_handler);
@@ -473,6 +493,9 @@ function init() {
 
 	var revealrange = document.getElementById('revealrange');
 	revealrange.addEventListener('input', revealrange_input_handler);
+
+	var directionalcheckbox = document.getElementById('directionalcheckbox');
+	directionalcheckbox.addEventListener('click', directionalcheckbox_click_handler);
 
 	puzzleinput_input_handler();
 }
