@@ -127,7 +127,11 @@ function _solve_board_recursive(board, x, y, color) {
 			return _solve_board_recursive(board, null, null, null);
 		} else {
 			// Middle of a path.
-			for (var dir of DIRECTIONS) {
+
+			// for (var dir of DIRECTIONS) {
+			for (var dir_index = 0; dir_index < DIRECTIONS.length; dir_index++) {
+				var dir = DIRECTIONS[dir_index];
+
 				var dx = x + dir.dx;
 				var dy = y + dir.dy;
 
