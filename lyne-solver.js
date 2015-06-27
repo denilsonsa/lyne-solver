@@ -105,7 +105,7 @@ function _solve_board_recursive(board, x, y, color) {
 				// Found a solution!
 				return true;
 			} else if (board.incomplete_nodes < 0) {
-				console.error('board.incomplete_nodes == ' + board.incomplete_nodes);
+				console.error('board.incomplete_nodes: ' + board.incomplete_nodes);
 				return false;
 			} else {
 				return false;
@@ -262,7 +262,7 @@ function parse_text_input(lines) {
 		board.errors.push('Empty board.');
 	}
 
-	if (terminator_count.length == 0) {
+	if (terminator_count.length === 0) {
 		board.errors.push('No terminator node was found.');
 	}
 	for (var i in terminator_count) {
@@ -365,8 +365,17 @@ function build_svg_from_board(board) {
 		revealrange.disabled = true;
 	} else {
 		revealrange.disabled = false;
-		revealrange.max = board.edge_count;
 
+		// Updating the slider to the new edge count.
+		var is_reveal_slider_at_max = (revealrange.value === revealrange.max);
+		revealrange.max = board.edge_count;
+		if (is_reveal_slider_at_max) {
+			// If value was already at maximum before, the user likely wants
+			// the value at maximum again.
+			revealrange.value = revealrange.max;
+		}
+
+		// Edge indexes being shuffled in a random order.
 		var random_numbers = [];
 		for (var i = 0; i < board.edge_count; i++) {
 			random_numbers[i] = i;
