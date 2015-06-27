@@ -16,6 +16,10 @@
 
 <svg id="svgdefs">
 	<defs>
+		<marker id="mid_arrow" markerWidth="2" markerHeight="2" viewBox="-1 -1 2 2" orient="auto">
+			<path fill="#efebdf" d="M-1,-1 L1,0 -1,1 z" />
+		</marker>
+
 		<path id="triangle_shape" d="M0.5,0 l0.5,0.866 h-1 z" />
 		<clipPath id="triangle_clip" clipPathUnits="userSpaceOnUse">
 			<use xlink:href="#triangle_shape" x="0" y="0" />
@@ -111,11 +115,9 @@
 TdDSs</textarea>
 	<input type="button" id="solvebutton" value="Solve it!">
 	<div id="messages"></div>
-	<label for="revealrange">Reveal:</label>
+	<label title="Slide to reveal more of the lines once the board has been solved." for="revealrange">Reveal:</label>
 	<input title="Slide to reveal more of the lines once the board has been solved." type="range" id="revealrange" value="0" min="0" step="1">
-	<br/>
-	<div><input type="checkbox" id="directional"><label title="Lines show the direction they're moving" for="directional">Directional</label></div>
-	<div><input type="checkbox" id="autosolve"><label title="Warning: Might make input unresponsive for large puzzles." id="autosolvelabel" for="autosolve">Autosolve</label></div>
+	<p><label title="Arrows showing the direction of each line."><input type="checkbox" id="directionalcheckbox"> Directional</label></p>
 	<p><a href="https://github.com/denilsonsa/lyne-solver">Need help? Read more at GitHub.</a></p>
 </section>
 

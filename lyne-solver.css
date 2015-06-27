@@ -82,7 +82,7 @@ article > section > textarea#puzzleinput {
 	flex-grow: 1;
 
 	box-sizing: content-box;
-	min-height: 7.1em;
+	min-height: 5.1em;
 	min-width: 4em;
 	min-width: 7.1ch;
 	width: auto;
@@ -95,6 +95,12 @@ article > section > div#messages {
 	min-height: 1.1em;
 	line-height: 1.1em;
 	margin: 1ex 0;
+	white-space: pre-wrap;
+	white-space: pre-line;
+}
+article > section > p {
+	margin: 0;
+	margin-top: 1ex;
 }
 
 article > section > svg#svgsolution {
@@ -125,10 +131,6 @@ article > section > svg#svgsolution {
 	display: none;
 }
 
-#svgsolutioncontainer > svg .edge.edgewide {
-	stroke-width: 0.25px;
-}
-
-#autosolvelabel {
-	color: #FB8686;
+#svgsolutioncontainer.directional > svg .edge {
+	marker-mid: url(#mid_arrow);
 }

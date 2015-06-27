@@ -105,7 +105,7 @@ function _solve_board_recursive(board, x, y, color) {
 				// Found a solution!
 				return true;
 			} else if (board.incomplete_nodes < 0) {
-				console.error('board.incomplete_nodes == ' + board.incomplete_nodes);
+				console.error('board.incomplete_nodes: ' + board.incomplete_nodes);
 				return false;
 			} else {
 				return false;
@@ -127,8 +127,11 @@ function _solve_board_recursive(board, x, y, color) {
 			return _solve_board_recursive(board, null, null, null);
 		} else {
 			// Middle of a path.
-			for (var i = 0; i < DIRECTIONS.length; i++) {
-				var dir = DIRECTIONS[i];
+
+			// for (var dir of DIRECTIONS) {
+			for (var dir_index = 0; dir_index < DIRECTIONS.length; dir_index++) {
+				var dir = DIRECTIONS[dir_index];
+
 				var dx = x + dir.dx;
 				var dy = y + dir.dy;
 
@@ -259,7 +262,7 @@ function parse_text_input(lines) {
 		board.errors.push('Empty board.');
 	}
 
-	if (terminator_count.length == 0) {
+	if (terminator_count.length === 0) {
 		board.errors.push('No terminator node was found.');
 	}
 	for (var i in terminator_count) {
@@ -331,7 +334,7 @@ function parse_board_from_input() {
 	var board = parse_text_input(lines);
 
 	var messages = document.getElementById('messages');
-	messages.innerHTML = board.errors.join('\n');
+	messages.textContent = board.errors.join('\n');
 
 	return board;
 }
@@ -341,7 +344,7 @@ function build_svg_from_board(board) {
 		return;
 	}
 
-	var container = document.getElementById('svgsolutioncontainer');
+	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
 
 	var svg_code = '';
 
@@ -363,16 +366,16 @@ function build_svg_from_board(board) {
 	} else {
 		revealrange.disabled = false;
 
-		// remember if value was at maximum
-		var shouldmax = revealrange.value == revealrange.max;
-		
+		// Updating the slider to the new edge count.
+		var is_reveal_slider_at_max = (revealrange.value === revealrange.max);
 		revealrange.max = board.edge_count;
-		
-		// if value was already at maximum before, the user likely wants the value at maximum again
-		if (shouldmax) {
+		if (is_reveal_slider_at_max) {
+			// If value was already at maximum before, the user likely wants
+			// the value at maximum again.
 			revealrange.value = revealrange.max;
 		}
 
+		// Edge indexes being shuffled in a random order.
 		var random_numbers = [];
 		for (var i = 0; i < board.edge_count; i++) {
 			random_numbers[i] = i;
@@ -388,40 +391,14 @@ function build_svg_from_board(board) {
 				if (node) {
 					for (var k = 0; k < node.edges.length; k++) {
 						var edge = node.edges[k];
-						var n = random_numbers.pop();
-						
-						var startX = (j * 1.5 + 0.5),
-							startY = (i * 1.5 + 0.5),
-							endX = ((j + edge.direction.dx) * 1.5 + 0.5),
-							endY = ((i + edge.direction.dy) * 1.5 + 0.5);
-
-
-						if (isDirectional) {
-							var midX = (startX + endX) / 2,
-								midY = (startY + endY) / 2;
-
-							// if directional, draw the line in two segments, one of them larger.
-							svg_code += '<line class="edge" id="edge' + n + 
-								'" stroke="' + edge_colors[edge.color] + 
-								'" x1="' + startX + 
-								'" y1="' + startY + 
-								'" x2="' + midX + 
-								'" y2="' + midY + '" />';
-							svg_code += '<line class="edge edgewide" id="edge' + n + 'x' +
-								'" stroke="' + edge_colors[edge.color] + 
-								'" x1="' + midX + 
-								'" y1="' + midY + 
-								'" x2="' + endX + 
-								'" y2="' + endY + '" />';
-						} else {
-							svg_code += '<line class="edge" id="edge' + n + 
-								'" stroke="' + edge_colors[edge.color] + 
-								'" x1="' + startX + 
-								'" y1="' + startY + 
-								'" x2="' + endX + 
-								'" y2="' + endY + '" />';
-						}
-						
+						svg_code += '<polyline ' +
+							'class="edge" '+
+							'id="edge' + random_numbers.pop() + '" ' +
+							'stroke="' + edge_colors[edge.color] + '" ' +
+							'points="' +
+							'' + ((j                        ) * 1.5 + 0.5) + ',' + ((i                        ) * 1.5 + 0.5) + ' ' +
+							'' + ((j + edge.direction.dx / 2) * 1.5 + 0.5) + ',' + ((i + edge.direction.dy / 2) * 1.5 + 0.5) + ' ' +
+							'' + ((j + edge.direction.dx    ) * 1.5 + 0.5) + ',' + ((i + edge.direction.dy    ) * 1.5 + 0.5) + '" />';
 					}
 				}
 			}
@@ -448,7 +425,7 @@ function build_svg_from_board(board) {
 	}
 
 	svg_code += '</svg>';
-	container.innerHTML = svg_code;
+	svgsolutioncontainer.innerHTML = svg_code;
 
 	reveal_edges(revealrange.value);
 }
@@ -493,9 +470,9 @@ function solvebutton_click_handler() {
 		var messages = document.getElementById('messages');
 		var found = solve_board(board);
 		if (found) {
-			messages.innerHTML = 'Solution found!';
+			messages.textContent = 'Solution found!';
 		} else {
-			messages.innerHTML = 'No solution was found. :(';
+			messages.textContent = 'No solution was found. :(';
 		}
 
 		//console.log(solution_to_text(board));
@@ -508,10 +485,16 @@ function revealrange_input_handler() {
 	reveal_edges(revealrange.value);
 }
 
-function directional_input_handler () {
-	if (lastBoard) {
-		build_svg_from_board(lastBoard);
-		revealrange_input_handler();
+function directionalcheckbox_click_handler() {
+	var directionalcheckbox = document.getElementById('directionalcheckbox');
+	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
+
+	// Damn IE… Does not support toggle second argument.
+	//svgsolutioncontainer.classList.toggle('directional', directionalcheckbox.checked);
+	if (directionalcheckbox.checked) {
+		svgsolutioncontainer.classList.add('directional');
+	} else {
+		svgsolutioncontainer.classList.remove('directional');
 	}
 }
 
@@ -526,9 +509,9 @@ function init() {
 	revealrange.addEventListener('change', revealrange_input_handler);
 	revealrange.addEventListener('input', revealrange_input_handler);
 
-	var directional = document.getElementById('directional');
-	directional.addEventListener('change', directional_input_handler);
-	
+	var directionalcheckbox = document.getElementById('directionalcheckbox');
+	directionalcheckbox.addEventListener('click', directionalcheckbox_click_handler);
+
 	puzzleinput_input_handler();
 }
 
