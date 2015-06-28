@@ -325,6 +325,10 @@ function init() {
 
 	puzzleinput_input_handler();
 	showarrowscheckbox_click_handler();
+
+	// Preload this file.
+	var tmp_worker = new Worker('algorithm.js');
+	tmp_worker.terminate();
 }
 
 // Global var pointing to the background thread.
