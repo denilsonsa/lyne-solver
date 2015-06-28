@@ -22,6 +22,11 @@ The puzzle description is plain text formed by the following characters:
 
 Note that the original LYNE game only contains 3 shapes and does not have all 4 types of gray nodes.
 
+Offline usage
+-------------
+
+This solver can be downloaded and used offline. However, running it from the local filesystem on Google Chrome will not work due to "same origin" security restrictions. [Read more about it][sameorigin], or follow [issue 47416][sameoriginissue].
+
 About LYNE
 ----------
 
@@ -40,6 +45,7 @@ This solver was written by [Denilson Sá][denilsonsa] using modern web technolog
 * Graphics built using SVG. Each shape is defined once using `<defs>` and `<symbol>`, and later used as many times as needed with `<use>`.
 * Dynamically-generated SVG content. For some reason, browsers do not allow modifying `viewBox` attribute in `<svg>` element, nor modifying any of the relevant attributes of `<use>` element. For this reason, the entire SVG source-code is rewritten into a string and then added to the document (using `innerHTML`).
 * The solver is implemented as a simple recursive [backtracking][] algorithm.
+* The algorithm runs in a background thread using [Web Workers][workers].
 * Many LYNE puzzles have multiple solutions. The solver finds one arbitrary solution. It is possible to adapt the code to find all solutions, but it would also require additional code to remove duplicate solutions.
 * There is function to output a plain text representation of the solution, but there is no UI for it. It was implemented as a way to check if the algorithm worked, before the SVG-building function was written.
 
@@ -62,3 +68,6 @@ This solver was written by [Denilson Sá][denilsonsa] using modern web technolog
 [viewport-units]: http://www.w3.org/TR/css3-values/#viewport-relative-lengths
 [vanillajs]: http://vanilla-js.com/
 [backtracking]: https://en.wikipedia.org/wiki/Backtracking
+[sameorigin]: http://www.html5rocks.com/en/tutorials/workers/basics/#toc-security-local
+[sameoriginissue]: https://code.google.com/p/chromium/issues/detail?id=47416
+[workers]: http://www.w3.org/TR/workers/

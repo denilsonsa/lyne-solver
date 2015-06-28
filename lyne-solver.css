@@ -92,7 +92,7 @@ article > section > textarea#puzzleinput {
 	line-height: 1em;
 }
 article > section > div#messages {
-	min-height: 1.1em;
+	min-height: 2.2em;
 	line-height: 1.1em;
 	margin: 1ex 0;
 	white-space: pre-wrap;
@@ -101,6 +101,25 @@ article > section > div#messages {
 article > section > p {
 	margin: 0;
 	margin-top: 1ex;
+}
+
+div#messages.busy:before {
+	content: "⌛"; /* HOURGLASS */
+	/*content: "⏳";*/ /* HOURGLASS WITH FLOWING SAND */
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	line-height: 1em;
+	text-align: center;
+	animation: spinner 2000ms infinite linear;
+}
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 article > section > svg#svgsolution {
