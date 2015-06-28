@@ -244,15 +244,19 @@ function puzzleinput_input_handler() {
 }
 
 function solution_found_handler(e) {
+	var solve_finish_date = new Date();
+	var solve_time = solve_finish_date.getTime() - g_solve_start_date.getTime();
+	solve_time = solve_time / 1000;  // Converting to seconds.
+
 	interrupt_worker();
 
 	var messages = document.getElementById('messages');
 	var board = e.data;
 
 	if (board.solution_found === true) {
-		messages.textContent = 'Solution found!';
+		messages.textContent = 'Solution found after ' + solve_time.toFixed(1) + 's!';
 	} else if (board.solution_found === false) {
-		messages.textContent = 'No solution was found. :(';
+		messages.textContent = 'No solution found after ' + solve_time.toFixed(1)+ 's. :(';
 	} else {
 		console.error('board.solution_found: ' + board.solution_found);
 		messages.textContent = 'This should not have happened.';
@@ -273,6 +277,8 @@ function solvebutton_click_handler() {
 		var board = parse_board_from_input();
 
 		if (board.errors.length === 0) {
+			g_solve_start_date = new Date();
+
 			// Run the solving algorithm in a background thread.
 			g_worker = new Worker('algorithm.js');
 			g_worker.addEventListener('message', solution_found_handler);
@@ -323,6 +329,8 @@ function init() {
 
 // Global var pointing to the background thread.
 var g_worker = null;
+// Date object to measure the algorithm time.
+var g_solve_start_date = null;
 
 // This script should be included with "defer" attribute.
 init();
