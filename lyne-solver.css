@@ -149,6 +149,6 @@ article > section > svg#svgsolution {
 	stroke-width: 0.125px;
 	display: none;
 }
-#svgsolutioncontainer.showarrows > svg .edge {
-	marker-mid: url(#mid_arrow);
+#svgsolutioncontainer.hidearrows > svg .edge {
+	marker-mid: none;
 }

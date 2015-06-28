@@ -169,6 +169,7 @@ function build_svg_from_board(board) {
 							'class="edge" '+
 							'id="edge' + random_numbers.pop() + '" ' +
 							'stroke="' + edge_colors[edge.color] + '" ' +
+							'marker-mid="url(#mid_arrow)"' +
 							'points="' +
 							'' + ((j                        ) * 1.5 + 0.5) + ',' + ((i                        ) * 1.5 + 0.5) + ' ' +
 							'' + ((j + edge.direction.dx / 2) * 1.5 + 0.5) + ',' + ((i + edge.direction.dy / 2) * 1.5 + 0.5) + ' ' +
@@ -295,11 +296,11 @@ function showarrowscheckbox_click_handler() {
 	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
 
 	// Damn IE… Does not support toggle second argument.
-	//svgsolutioncontainer.classList.toggle('showarrows', showarrowscheckbox.checked);
+	//svgsolutioncontainer.classList.toggle('hidearrows', !showarrowscheckbox.checked);
 	if (showarrowscheckbox.checked) {
-		svgsolutioncontainer.classList.add('showarrows');
+		svgsolutioncontainer.classList.remove('hidearrows');
 	} else {
-		svgsolutioncontainer.classList.remove('showarrows');
+		svgsolutioncontainer.classList.add('hidearrows');
 	}
 }
 

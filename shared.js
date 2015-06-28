@@ -88,6 +88,8 @@ function Board() {
 	this.terminators = [];  // List of positions {x:0,y:0} of terminator nodes.
 	this.edge_count = 0;  // Number of edges in the solution.
 	this.solution_found = null;  // null, true, false.
+	// TODO: "solution_found" seems redundant to "edge_count" and
+	// "incomplete_nodes". It should probably be removed.
 
 	// Temporary variables used while solving the board.
 	this.incomplete_nodes = 0;
