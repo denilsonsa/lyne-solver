@@ -290,16 +290,16 @@ function revealrange_input_handler() {
 	reveal_edges(revealrange.value);
 }
 
-function directionalcheckbox_click_handler() {
-	var directionalcheckbox = document.getElementById('directionalcheckbox');
+function showarrowscheckbox_click_handler() {
+	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
 	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
 
 	// Damn IE… Does not support toggle second argument.
-	//svgsolutioncontainer.classList.toggle('directional', directionalcheckbox.checked);
-	if (directionalcheckbox.checked) {
-		svgsolutioncontainer.classList.add('directional');
+	//svgsolutioncontainer.classList.toggle('showarrows', showarrowscheckbox.checked);
+	if (showarrowscheckbox.checked) {
+		svgsolutioncontainer.classList.add('showarrows');
 	} else {
-		svgsolutioncontainer.classList.remove('directional');
+		svgsolutioncontainer.classList.remove('showarrows');
 	}
 }
 
@@ -313,11 +313,11 @@ function init() {
 	var revealrange = document.getElementById('revealrange');
 	revealrange.addEventListener('input', revealrange_input_handler);
 
-	var directionalcheckbox = document.getElementById('directionalcheckbox');
-	directionalcheckbox.addEventListener('click', directionalcheckbox_click_handler);
+	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
+	showarrowscheckbox.addEventListener('click', showarrowscheckbox_click_handler);
 
 	puzzleinput_input_handler();
-	directionalcheckbox_click_handler();
+	showarrowscheckbox_click_handler();
 }
 
 // Global var pointing to the background thread.
