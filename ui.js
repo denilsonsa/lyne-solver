@@ -234,15 +234,6 @@ function interrupt_worker() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////
-// Event handling.
-
-function puzzleinput_input_handler() {
-	interrupt_worker();
-	var board = parse_board_from_input();
-	build_svg_from_board(board);
-}
-
 function solution_found_handler(e) {
 	var solve_finish_date = new Date();
 	var solve_time = solve_finish_date.getTime() - g_solve_start_date.getTime();
@@ -267,6 +258,36 @@ function solution_found_handler(e) {
 	build_svg_from_board(board);
 }
 
+function start_background_solver(board) {
+	g_solve_start_date = new Date();
+
+	// Run the solving algorithm in a background thread.
+	g_worker = new Worker('algorithm.js');
+	g_worker.addEventListener('message', solution_found_handler);
+	g_worker.postMessage(board);
+
+	var solvebutton = document.getElementById('solvebutton');
+	solvebutton.value = 'Abort!';
+	messages.textContent = 'Searching for a solution…';
+	messages.classList.add('busy');
+}
+
+//////////////////////////////////////////////////////////////////////
+// UI event handling.
+
+function puzzleinput_input_handler() {
+	interrupt_worker();
+	var board = parse_board_from_input();
+	build_svg_from_board(board);
+
+	if (board.errors.length === 0) {
+		var autosolvecheckbox = document.getElementById('autosolvecheckbox');
+		if (autosolvecheckbox.checked) {
+			start_background_solver(board);
+		}
+	}
+}
+
 function solvebutton_click_handler() {
 	var messages = document.getElementById('messages');
 
@@ -275,19 +296,8 @@ function solvebutton_click_handler() {
 		messages.textContent = 'Interrupted by user.';
 	} else {
 		var board = parse_board_from_input();
-
 		if (board.errors.length === 0) {
-			g_solve_start_date = new Date();
-
-			// Run the solving algorithm in a background thread.
-			g_worker = new Worker('algorithm.js');
-			g_worker.addEventListener('message', solution_found_handler);
-			g_worker.postMessage(board);
-
-			var solvebutton = document.getElementById('solvebutton');
-			solvebutton.value = 'Abort!';
-			messages.textContent = 'Searching for a solution…';
-			messages.classList.add('busy');
+			start_background_solver(board);
 		}
 	}
 }
@@ -310,6 +320,15 @@ function showarrowscheckbox_click_handler() {
 	}
 }
 
+function autosolvecheckbox_click_handler(e) {
+	var autosolvecheckbox = document.getElementById('autosolvecheckbox');
+	if (autosolvecheckbox.checked) {
+		if (!g_worker) {
+			solvebutton_click_handler();
+		}
+	}
+}
+
 function init() {
 	var puzzleinput = document.getElementById('puzzleinput');
 	puzzleinput.addEventListener('input', puzzleinput_input_handler);
@@ -322,6 +341,9 @@ function init() {
 
 	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
 	showarrowscheckbox.addEventListener('click', showarrowscheckbox_click_handler);
+
+	var autosolvecheckbox = document.getElementById('autosolvecheckbox');
+	autosolvecheckbox.addEventListener('click', autosolvecheckbox_click_handler);
 
 	puzzleinput_input_handler();
 	showarrowscheckbox_click_handler();
