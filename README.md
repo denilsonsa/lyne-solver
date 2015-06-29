@@ -1,6 +1,8 @@
 LYNE puzzle solver
 ==================
 
+[![Donate using PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=denilsonsa%40gmail%2ecom&lc=US&item_name=Denilson&item_number=lyne-solver&currency_code=BRL) [![Flattr this project](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=denilsonsa&url=https%3A%2F%2Fgithub.com%2Fdenilsonsa%2Flyne-solver&title=LYNE+solver&description=Solver+for+LYNE+game.&tags=github&category=software)
+
 This is a solver for [LYNE][] game. It can also gradually show the connections, which is a helpful way to get a hint without showing the entire solution.
 
 The solver is written in JavaScript and HTML+CSS+SVG. It should work on any modern browser, desktop or mobile. It has been tested on Google Chrome 43 and Mozilla Firefox 38.
