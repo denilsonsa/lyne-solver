@@ -311,7 +311,7 @@ function showarrowscheckbox_click_handler() {
 	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
 	var svgsolutioncontainer = document.getElementById('svgsolutioncontainer');
 
-	// Damn IE… Does not support toggle second argument.
+	// Damn IE… Does not support .toggle() second argument.
 	//svgsolutioncontainer.classList.toggle('hidearrows', !showarrowscheckbox.checked);
 	if (showarrowscheckbox.checked) {
 		svgsolutioncontainer.classList.remove('hidearrows');
@@ -338,6 +338,18 @@ function init() {
 
 	var revealrange = document.getElementById('revealrange');
 	revealrange.addEventListener('input', revealrange_input_handler);
+
+	// Workaround for IE 11.
+	// https://msdn.microsoft.com/en-us/library/gg592978(v=vs.85).aspx
+	// https://connect.microsoft.com/IE/Feedback/Details/856998
+	// I'm not even writing workarounds for earlier IE versions, as they will
+	// probably be utterly broken beyond all hope.
+	if (navigator.userAgent.search(/Trident\/7/)) {
+		// The "onchange" event should only happen after the input element
+		// loses focus. However, in IE it happens immediately, behaving like
+		// "oninput".
+		revealrange.addEventListener('change', revealrange_input_handler);
+	}
 
 	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
 	showarrowscheckbox.addEventListener('click', showarrowscheckbox_click_handler);
