@@ -344,7 +344,7 @@ function init() {
 	// https://connect.microsoft.com/IE/Feedback/Details/856998
 	// I'm not even writing workarounds for earlier IE versions, as they will
 	// probably be utterly broken beyond all hope.
-	if (navigator.userAgent.search(/Trident\/7/)) {
+	if (navigator.userAgent.search(/Trident\/7/) > -1) {
 		// The "onchange" event should only happen after the input element
 		// loses focus. However, in IE it happens immediately, behaving like
 		// "oninput".
@@ -353,6 +353,14 @@ function init() {
 
 	var showarrowscheckbox = document.getElementById('showarrowscheckbox');
 	showarrowscheckbox.addEventListener('click', showarrowscheckbox_click_handler);
+
+	// IE11 can't render the arrows.
+	if (navigator.userAgent.search(/Trident\/7/) > -1) {
+		showarrowscheckbox.checked = false;
+		showarrowscheckbox.disabled = true;
+		showarrowscheckbox.parentNode.title = 'Not working in Microsoft Internet Explorer. Please consider using a modern browser.';
+		showarrowscheckbox.parentNode.style.textDecoration = 'line-through';
+	}
 
 	var autosolvecheckbox = document.getElementById('autosolvecheckbox');
 	autosolvecheckbox.addEventListener('click', autosolvecheckbox_click_handler);
