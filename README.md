@@ -32,7 +32,7 @@ This solver can be downloaded and used offline. However, running it from the loc
 About LYNE
 ----------
 
-[LYNE][] is a puzzle game written by [Thomas Bowker][tb] using [Unity][]. It is available on digital distribution platforms: [Google Play][play], [Amazon App Store][amazon], [iTunes][itunes], [Windows Phone Store][wp], [Steam][steam], [Humble Bundle Store][humble], [itch.io][itch]. It is also available [DRM-free][lyne].
+[LYNE][] is a puzzle game written by [Thomas Bowker][tb] using [Unity][]. It is available on digital distribution platforms: [Google Play][play], [Amazon App Store][amazon], [iTunes][itunes], [Steam][steam], [Humble Bundle Store][humble], [itch.io][itch]. It is also available [DRM-free][lyne].
 
 About this solver (under-the-hood information)
 ----------------------------------------------
@@ -51,23 +51,22 @@ This solver was written by [Denilson Sá][denilsonsa] using modern web technolog
 * Many LYNE puzzles have multiple solutions. The solver finds one arbitrary solution. It is possible to adapt the code to find all solutions, but it would also require additional code to remove duplicate solutions.
 * There is function to output a plain text representation of the solution, but there is no UI for it. It was implemented as a way to check if the algorithm worked, before the SVG-building function was written.
 
-[solver]: http://denilsonsa.github.io/lyne-solver/lyne-solver.html
-[lyne]: http://www.lynegame.com/
+[solver]: https://denilsonsa.github.io/lyne-solver/lyne-solver.html
+[lyne]: https://www.lynegame.com/
 [play]: https://play.google.com/store/apps/details?id=com.thomasbowker.lynerelease
-[amazon]: http://www.amazon.com/Thomas-Bowker-LYNE/dp/B00HA8WNZ0
+[amazon]: https://www.amazon.com/Thomas-Bowker-LYNE/dp/B00HA8WNZ0
 [itunes]: https://itunes.apple.com/us/app/lyne/id731753333
-[wp]: http://www.windowsphone.com/en-us/store/app/lyne/bf04e86a-cf61-491e-b095-a257fb725f5e
-[steam]: http://store.steampowered.com/app/266010/
+[steam]: https://store.steampowered.com/app/266010/
 [humble]: https://www.humblebundle.com/store/p/lyne_storefront
-[itch]: http://thomasbowker.itch.io/lyne
-[tb]: http://thomasbowker.com/
+[itch]: https://thomasbowker.itch.io/lyne
+[tb]: https://thomasbowker.com/
 [unity]: https://unity3d.com/
-[denilsonsa]: http://denilson.sa.nom.br/
+[denilsonsa]: https://denilson.sa.nom.br/
 [linear-gradient]: https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient
 [background-size]: https://developer.mozilla.org/en-US/docs/Web/CSS/background-size
-[css3patterns]: http://lea.verou.me/css3patterns/
+[css3patterns]: https://projects.verou.me/css3patterns/
 [flex]: https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-[viewport-units]: http://www.w3.org/TR/css3-values/#viewport-relative-lengths
+[viewport-units]: https://www.w3.org/TR/css3-values/#viewport-relative-lengths
 [vanillajs]: http://vanilla-js.com/
 [backtracking]: https://en.wikipedia.org/wiki/Backtracking
 [sameorigin]: http://www.html5rocks.com/en/tutorials/workers/basics/#toc-security-local
